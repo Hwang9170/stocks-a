@@ -1,12 +1,12 @@
-import { StockChartData, StockInsightsData, SecFilingData, AnalystOpinionData } from '../types/stock';
-
-// Yahoo Finance API 연동 모듈
+import {
+  StockChartData,
+  StockInsightsData,
+  SecFilingData,
+  AnalystOpinionData,
+} from '../types/stock';
 
 /**
- * 주식 차트 데이터를 가져오는 함수
- * @param symbol 주식 심볼
- * @param interval 데이터 간격 (1d, 1wk, 1mo 등)
- * @param range 데이터 범위 (1d, 5d, 1mo, 3mo, 6mo, 1y, 5y 등)
+ * Yahoo Finance API - 주식 차트 데이터 가져오기
  */
 export async function getStockChart(
   symbol: string,
@@ -14,15 +14,20 @@ export async function getStockChart(
   range: string = '1mo'
 ): Promise<StockChartData | null> {
   try {
-    // 실제 API 호출 코드
     const response = await fetch(`/api/stock/chart?symbol=${symbol}&interval=${interval}&range=${range}`);
-    
+
     if (!response.ok) {
       throw new Error(`API 요청 실패: ${response.status}`);
     }
-    
-    const data = await response.json();
-    return data.chart.result[0] as StockChartData;
+
+    const data = await response.json() as {
+      chart: {
+        result: StockChartData[];
+        error: null | { code: string; description: string };
+      };
+    };
+
+    return data.chart.result[0];
   } catch (error) {
     console.error('주식 차트 데이터 가져오기 실패:', error);
     return null;
@@ -30,19 +35,23 @@ export async function getStockChart(
 }
 
 /**
- * 주식 인사이트 데이터를 가져오는 함수
- * @param symbol 주식 심볼
+ * Yahoo Finance API - 주식 인사이트 데이터 가져오기
  */
 export async function getStockInsights(symbol: string): Promise<StockInsightsData | null> {
   try {
     const response = await fetch(`/api/stock/insights?symbol=${symbol}`);
-    
+
     if (!response.ok) {
       throw new Error(`API 요청 실패: ${response.status}`);
     }
-    
-    const data = await response.json();
-    return data.finance.result as StockInsightsData;
+
+    const data = await response.json() as {
+      finance: {
+        result: StockInsightsData[];
+      };
+    };
+
+    return data.finance.result[0];
   } catch (error) {
     console.error('주식 인사이트 데이터 가져오기 실패:', error);
     return null;
@@ -50,19 +59,23 @@ export async function getStockInsights(symbol: string): Promise<StockInsightsDat
 }
 
 /**
- * SEC 파일링 데이터를 가져오는 함수
- * @param symbol 주식 심볼
+ * Yahoo Finance API - SEC 파일링 데이터 가져오기
  */
 export async function getSecFilings(symbol: string): Promise<SecFilingData | null> {
   try {
     const response = await fetch(`/api/stock/sec-filing?symbol=${symbol}`);
-    
+
     if (!response.ok) {
       throw new Error(`API 요청 실패: ${response.status}`);
     }
-    
-    const data = await response.json();
-    return data.quoteSummary.result[0].secFilings as SecFilingData;
+
+    const data = await response.json() as {
+      quoteSummary: {
+        result: { secFilings: SecFilingData }[];
+      };
+    };
+
+    return data.quoteSummary.result[0].secFilings;
   } catch (error) {
     console.error('SEC 파일링 데이터 가져오기 실패:', error);
     return null;
@@ -70,19 +83,21 @@ export async function getSecFilings(symbol: string): Promise<SecFilingData | nul
 }
 
 /**
- * 애널리스트 의견 데이터를 가져오는 함수
- * @param symbol 주식 심볼
+ * Yahoo Finance API - 애널리스트 의견 데이터 가져오기
  */
 export async function getAnalystOpinions(symbol: string): Promise<AnalystOpinionData | null> {
   try {
     const response = await fetch(`/api/stock/analyst-opinions?symbol=${symbol}`);
-    
+
     if (!response.ok) {
       throw new Error(`API 요청 실패: ${response.status}`);
     }
-    
-    const data = await response.json();
-    return data.result[0] as AnalystOpinionData;
+
+    const data = await response.json() as {
+      result: AnalystOpinionData[];
+    };
+
+    return data.result[0];
   } catch (error) {
     console.error('애널리스트 의견 데이터 가져오기 실패:', error);
     return null;
@@ -90,18 +105,20 @@ export async function getAnalystOpinions(symbol: string): Promise<AnalystOpinion
 }
 
 /**
- * 주식 검색 함수
- * @param query 검색어
+ * Yahoo Finance API - 주식 검색
  */
 export async function searchStocks(query: string) {
   try {
     const response = await fetch(`/api/stock/search?query=${encodeURIComponent(query)}`);
-    
+
     if (!response.ok) {
       throw new Error(`API 요청 실패: ${response.status}`);
     }
-    
-    const data = await response.json();
+
+    const data = await response.json() as {
+      results: any[]; // 필요시 정확한 타입 정의
+    };
+
     return data.results;
   } catch (error) {
     console.error('주식 검색 실패:', error);
