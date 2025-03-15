@@ -1,1 +1,3 @@
 node_modules
+# .gitignore에 추가 (이미 있을 수도 있음)
+.next/
