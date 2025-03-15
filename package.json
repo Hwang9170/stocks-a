@@ -13,7 +13,10 @@
     "lint": "next lint",
     "build:worker": "opennextjs-cloudflare",
     "preview": "opennextjs-cloudflare && wrangler dev",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
+    "vercel-build": "npm install --legacy-peer-deps && npm run build"
+}
+
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
