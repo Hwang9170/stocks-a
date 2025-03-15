@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "typeRoots": ["./node_modules/@types", "./types"],
     "target": "ES2017",
     "lib": [
       "dom",
@@ -28,7 +29,8 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "env.d.ts", "src"
   ],
   "exclude": [
     "node_modules"
